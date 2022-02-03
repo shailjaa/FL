@@ -89,16 +89,20 @@ def index():
             request_data = request.form.to_dict()
             chunking(request_data)
 
-            shutil.rmtree('./dataset/')
+            if(os.path.exists('./dataset/')):
+                shutil.rmtree('./dataset/')
             return flask.jsonify({'code':200, 'Message' : 'Data Chunking Done Successfully'})
+
         else:
-            shutil.rmtree('./dataset/')
+            if(os.path.exists('./dataset/')):
+                shutil.rmtree('./dataset/')
             return flask.jsonify({'code':400, 'Message' : 'Some Input Value is not correct'})
 
     except Exception as e:
         print("Exception in Average Server", e)
         traceback.print_exc()
-        shutil.rmtree('./dataset/')
+        if(os.path.exists('./dataset/')):
+            shutil.rmtree('./dataset/')
         return flask.jsonify({'code':400, 'Message':'Data Not Uploaded successfully'})
 
 if __name__ == '__main__':
