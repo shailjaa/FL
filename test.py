@@ -27,13 +27,13 @@ def chunking(request_data):
 
     print("./dataset/" + request_data['dataset'].split(".")[0] + "/")
     train_loader = torch.utils.data.DataLoader(
-    torchvision.datasets.MNIST(base_directory + "actual_data/" , train=True, download=True,
-                            transform=torchvision.transforms.Compose([
+    torchvision.datasets.SBDataset(base_directory + "actual_data/", download = True,
+                            transforms=torchvision.transforms.Compose([
                                 torchvision.transforms.ToTensor(),
                                 torchvision.transforms.Normalize(
                                 (0.1307,), (0.3081,))
                             ])),
-    batch_size=10, shuffle=True)
+    batch_size=1000, shuffle=True)
 
     examples = enumerate(train_loader)
     print(len(train_loader))
