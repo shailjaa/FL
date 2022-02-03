@@ -30,7 +30,6 @@ pyparsing==3.0.7
 python-dateutil==2.8.2
 pytz==2021.3
 s3transfer==0.5.0
-sagemaker==2.74.0
 six
 smdebug-rulesconfig==1.0.1
 torch==1.10.2
