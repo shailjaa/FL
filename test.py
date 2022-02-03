@@ -41,21 +41,21 @@ def chunking(request_data):
     data_batch_list = []
     
     os.makedirs(base_directory + "data/")
-    os.makedirs(base_directory + "target/")
+#     os.makedirs(base_directory + "target/")
     os.makedirs(base_directory + "Zip_data/")
 
     for i in range(len(train_loader)):
-        batch_idx, (data, target) = next(examples)
+        batch_idx, data = next(examples)
         data_batch_list.append(batch_idx)
         torch.save(data, base_directory + "data/" + str(batch_idx)+".pt")
-        torch.save(target, base_directory + "target/"+str(batch_idx)+".pt")
+#         torch.save(target, base_directory + "target/"+str(batch_idx)+".pt")
 
     count = 0
     if total_jobs < 600:
         data_length=math.ceil(len(train_loader)/total_jobs)
         for i in range(int(total_jobs)):
             os.makedirs(base_directory + str(i) + "/data/")
-            os.makedirs(base_directory + str(i) + "/target/")
+#             os.makedirs(base_directory + str(i) + "/target/")
             for j in range(int(data_length)):
                 print("COUNT", count)
                 if count == len(train_loader):
@@ -64,7 +64,7 @@ def chunking(request_data):
                     random_pt = random.choice(data_batch_list)
                     data_batch_list.remove(random_pt)
                     shutil.copy2(base_directory + "data/" + str(random_pt)+".pt", base_directory + str(i)+"/data/" + str(random_pt) + ".pt")
-                    shutil.copy2(base_directory + "target/" + str(random_pt)+".pt", base_directory + str(i)+"/target/" + str(random_pt) + ".pt")
+#                     shutil.copy2(base_directory + "target/" + str(random_pt)+".pt", base_directory + str(i)+"/target/" + str(random_pt) + ".pt")
                     count = count + 1
 
             make_archive(base_directory + str(i), base_directory + "Zip_data/" + str(i)+ ".zip")
