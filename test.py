@@ -26,12 +26,14 @@ def chunking(request_data):
         zip_ref.extractall("./dataset/")
 
     print("./dataset/" + request_data['dataset'].split(".")[0] + "/")
-    data = torchvision.datasets.ImageFolder(root = "./dataset/" + request_data['dataset'].split(".")[0] + "/",  transform=torchvision.transforms.Compose(
-            [torchvision.transforms.Resize([224, 224]),
-                torchvision.transforms.ToTensor(),
-                torchvision.transforms.Normalize(mean=[0.485, 0.456, 0.406],
-                std=[0.229, 0.224, 0.225])]))
-    train_loader = torch.utils.data.DataLoader(data,batch_size=2, shuffle=True)
+    train_loader = torch.utils.data.DataLoader(
+    torchvision.datasets.MNIST(base_directory + "actual_data/" , train=True, download=True,
+                            transform=torchvision.transforms.Compose([
+                                torchvision.transforms.ToTensor(),
+                                torchvision.transforms.Normalize(
+                                (0.1307,), (0.3081,))
+                            ])),
+    batch_size=10, shuffle=True)
 
     examples = enumerate(train_loader)
     print(len(train_loader))
