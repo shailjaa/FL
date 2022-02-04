@@ -10,6 +10,7 @@ import flask
 import traceback
 import ast
 import zipfile
+import datetime
 from flask import Flask,request,Response
 app = Flask(__name__)
 
@@ -21,10 +22,12 @@ base_directory = "./dataset/process_data/"
 def chunking(request_data):
     my_bucket = request_data['bucket_name']
     total_jobs = ast.literal_eval(request_data['total_jobs'])
+    print("TIMESTAMP : ===== ", datetime.datetime.now())    
+
     s3_client.download_file(my_bucket, request_data['dataset'], request_data['dataset'].split("/")[-1])
     with zipfile.ZipFile(request_data['dataset'].split("/")[-1], 'r') as zip_ref:
         zip_ref.extractall("./dataset/")
-
+  
     print("./dataset/" + request_data['dataset'].split(".")[0] + "/")
     train_loader = torch.utils.data.DataLoader(
     torchvision.datasets.SBU(base_directory + "actual_data/", download = True,
@@ -34,12 +37,13 @@ def chunking(request_data):
                                 (0.1307,), (0.3081,))
                             ])),
     batch_size=1000, shuffle=True)
+    print("TIMESTAMP DOWNLOAD COMPLETE: ===== ", datetime.datetime.now())    
 
     examples = enumerate(train_loader)
     print(len(train_loader))
     
     data_batch_list = []
-    
+
     os.makedirs(base_directory + "data/")
 #     os.makedirs(base_directory + "target/")
     os.makedirs(base_directory + "Zip_data/")
@@ -66,10 +70,11 @@ def chunking(request_data):
                     shutil.copy2(base_directory + "data/" + str(random_pt)+".pt", base_directory + str(i)+"/data/" + str(random_pt) + ".pt")
 #                     shutil.copy2(base_directory + "target/" + str(random_pt)+".pt", base_directory + str(i)+"/target/" + str(random_pt) + ".pt")
                     count = count + 1
-
+            
             make_archive(base_directory + str(i), base_directory + "Zip_data/" + str(i)+ ".zip")
             s3_client.upload_file( base_directory + "Zip_data/" + str(i)+ ".zip", request_data['bucket_name'], "data/" + str(i) + ".zip")
-    # except Exception as e:
+    print("TIMESTAMP CHUNKING COMPLETE: ===== ", datetime.datetime.now())   
+  # except Exception as e:
     #     print("Error : ", e)
     #     traceback.print_exc
 
